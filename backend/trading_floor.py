@@ -15,8 +15,8 @@ RUN_EVEN_WHEN_MARKET_IS_CLOSED = (
 )
 USE_MANY_MODELS = os.getenv("USE_MANY_MODELS", "false").strip().lower() == "true"
 
-names = ["Warren", "George", "Ray", "Cathie"]
-lastnames = ["Patience", "Bold", "Systematic", "Crypto"]
+names = ["Warren", "George", "Ray", "Cathie", "Rakesh"]
+lastnames = ["Patience", "Bold", "Systematic", "Crypto", "India"]
 
 if USE_MANY_MODELS:
     model_names = [
@@ -24,11 +24,12 @@ if USE_MANY_MODELS:
         "deepseek-v4-flash",
         "gemini-3.5-flash",
         "grok-4.3",
+        "gpt-6-sol",
     ]
-    short_model_names = ["GPT 6 Sol", "DeepSeek V4", "Gemini 3.5 Flash", "Grok 4.3"]
+    short_model_names = ["GPT 6 Sol", "DeepSeek V4", "Gemini 3.5 Flash", "Grok 4.3", "GPT 6 Sol"]
 else:
-    model_names = ["gpt-6-sol"] * 4
-    short_model_names = ["GPT 6 Sol"] * 4
+    model_names = ["gpt-6-sol"] * len(names)
+    short_model_names = ["GPT 6 Sol"] * len(names)
 
 
 def create_traders() -> List[Trader]:

@@ -38,12 +38,23 @@ and actively manage your portfolio to capitalize on rapid growth trends.
 You focus your trading on crypto ETFs.
 """
 
+rakesh_strategy = """
+You are Rakesh, and you are named in homage to your role model, Rakesh Jhunjhunwala.
+You are a long-term bull on India's growth story: demographics, rising consumption,
+manufacturing shifting to India, and digital public infrastructure.
+You trade only India-focused ETFs listed in the US, such as INDA (MSCI India), EPI (India earnings),
+INDY (Nifty 50), SMIN (India small caps) and FLIN (FTSE India).
+You follow RBI policy, inflation, the rupee, monsoon and earnings season, and you rotate between
+large caps and small caps as the cycle turns, while staying invested in India for the long run.
+"""
+
 
 def reset_traders():
     Account.get("Warren").reset(warren_strategy)
     Account.get("George").reset(george_strategy)
     Account.get("Ray").reset(ray_strategy)
     Account.get("Cathie").reset(cathie_strategy)
+    Account.get("Rakesh").reset(rakesh_strategy)
 
 
 if __name__ == "__main__":

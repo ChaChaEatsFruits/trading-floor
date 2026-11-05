@@ -1,7 +1,7 @@
 [project]
 name = "trading-floor"
 version = "0.1.0"
-description = "Four AI traders on MCP servers, with a live Gradio dashboard."
+description = "Five AI traders on MCP servers, with a live FastAPI + Vite dashboard."
 requires-python = ">=3.12"
 dependencies = [
     "fastapi>=0.136.1",
@@ -17,3 +17,11 @@ dependencies = [
     "requests>=2.33.1",
     "uvicorn[standard]>=0.46.0",
 ]
+
+[dependency-groups]
+dev = [
+    "pytest>=9.2.0",
+]
+
+[tool.pytest.ini_options]
+pythonpath = ["."]

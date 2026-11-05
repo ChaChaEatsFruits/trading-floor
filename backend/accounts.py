@@ -9,6 +9,7 @@ load_dotenv(override=True)
 
 INITIAL_BALANCE = 10_000.0
 SPREAD = 0.002
+MAX_POSITION_FRACTION = 0.25
 
 
 class Transaction(BaseModel):
@@ -86,7 +87,17 @@ class Account(BaseModel):
             raise ValueError("Insufficient funds to buy shares.")
         elif price==0:
             raise ValueError(f"Unrecognized symbol {symbol}")
-        
+
+        # Risk guardrail: no single stock may exceed MAX_POSITION_FRACTION of portfolio value.
+        limit = MAX_POSITION_FRACTION * self.calculate_portfolio_value()
+        position_after = (self.holdings.get(symbol, 0) + quantity) * price
+        if position_after > limit:
+            max_more = max(0, int(limit // price) - self.holdings.get(symbol, 0))
+            raise ValueError(
+                f"Position limit: {symbol} would be ${position_after:,.0f}, over the "
+                f"{MAX_POSITION_FRACTION:.0%} cap of ${limit:,.0f}. You can buy at most {max_more} more shares."
+            )
+
         # Update holdings
         self.holdings[symbol] = self.holdings.get(symbol, 0) + quantity
         timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
