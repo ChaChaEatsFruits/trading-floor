@@ -1,0 +1,10 @@
+__pycache__/
+*.py[cod]
+.venv/
+.env
+*.db
+memory/*
+!memory/.gitkeep
+node_modules/
+dist/
+.playwright-mcp/
