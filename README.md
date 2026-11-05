@@ -4,7 +4,7 @@ Four AI traders - Warren (value), George (macro), Ray (systematic) and Cathie (c
 manage a simulated account through MCP servers. Every trader is an agent on the OpenAI Agents SDK
 that calls three servers directly (accounts, market data, push notifications) and delegates
 research to a researcher sub-agent that has Fetch, Tavily web search and a per-trader Memory
-(libSQL) server. A Gradio dashboard shows the floor live.
+(libSQL) server. A FastAPI backend serves the data to a Vite + TypeScript frontend that shows the floor live.
 
 ## How it works
 
@@ -13,8 +13,10 @@ research to a researcher sub-agent that has Fetch, Tavily web search and a per-t
 - `backend/accounts*.py`, `database.py` - account state in SQLite, served over MCP
 - `backend/market*.py` - Massive market data when a key is set, otherwise simulated prices
 - `backend/mcp_servers.py` - the MCP servers for the traders and the researcher
-- `backend/api.py` - FastAPI endpoints used by the dashboard
-- `demo/` - Gradio dashboard; `frontend/` - optional Vite + uPlot charts
+- `backend/tracers.py` - `LogTracer`, which writes every SDK trace span to the database for the live log
+- `backend/api.py` - read-only FastAPI endpoints: traders, portfolio value, holdings, transactions, logs, market source
+- `frontend/` - Vite + TypeScript app (uPlot): per-trader portfolio chart, holdings heatmap, activity log,
+  transactions, dark/light theme, and a simulated/live market badge. In dev, Vite proxies `/api` to port 8000.
 
 ## Models
 
@@ -26,19 +28,27 @@ provider's model (GPT, DeepSeek, Gemini, Grok); that needs the matching keys in 
 Requires Python 3.12+, [uv](https://docs.astral.sh/uv/) and Node.js (`npx`).
 
 ```
-cp .env.example .env   # add OPENAI_API_KEY, plus TAVILY_API_KEY for web search
-uv run app.py          # dashboard
+cp .env.example .env                        # add OPENAI_API_KEY, plus TAVILY_API_KEY for web search
+uv sync
+cd frontend && npm install && cd ..
+```
+
+Run three terminals:
+
+```
+uv run uvicorn backend.api:app --port 8000  # API (docs at http://localhost:8000/docs)
+cd frontend && npm run dev                  # UI at http://localhost:5173
+uv run -m backend.trading_floor             # the trading engine
 ```
 
 Optional: `MASSIVE_API_KEY` for real prices, `PUSHOVER_USER`/`PUSHOVER_TOKEN` for notifications.
 `RUN_EVERY_N_MINUTES` (default 60) sets the cadence, and the floor skips runs while the market is
-closed unless `RUN_EVEN_WHEN_MARKET_IS_CLOSED=true`.
-
-Frontend (optional): `cd frontend && npm install && npm run dev`.
+closed unless `RUN_EVEN_WHEN_MARKET_IS_CLOSED=true`. The engine loops until stopped, so watch your API usage.
 
 ## Verified
 
 One full cycle for one trader (Warren) ran on `gpt-6-sol`: it read its account, changed its
-strategy and bought VTI and VXUS through the accounts server, and the API listed all four
-traders as "GPT 6 Sol". Not exercised: the Gradio dashboard, the Vite frontend, the other three
-traders, `USE_MANY_MODELS=true`, and runs with the real Massive or Pushover keys.
+strategy and bought VTI and VXUS through the accounts server. The frontend type-checks and builds,
+and the API (including the activity log) answers through the Vite proxy with all four traders
+labelled "GPT 6 Sol". Not exercised: the UI rendered in a browser, the scheduler loop, the other
+three traders, `USE_MANY_MODELS=true`, and runs with the Pushover key.

@@ -1,10 +1,9 @@
 """HTTP API over the trading floor, for a separate frontend to consume.
 
-The Gradio dashboard in demo/ reads accounts.db in-process. This serves the same
-data as JSON so a decoupled web frontend can render it. Everything here is
+This serves accounts.db as JSON so the Vite frontend in frontend/ can render it. Everything here is
 read-only; the trading floor writes the database out of band.
 
-Run it from the 6_mcp directory so it shares the engine's accounts.db:
+Run it from the project root so it shares the engine's accounts.db:
 
     uv run uvicorn backend.api:app --port 8000
 """
@@ -16,7 +15,7 @@ from backend.accounts import Account
 from backend.database import read_log
 from backend.trading_floor import names, lastnames, short_model_names
 
-# Mirrors the log colours in demo/ so the frontend reproduces the same panel.
+# Log colours by step type; the frontend uses them to colour the activity log.
 LOG_COLORS = {
     "trace": "#87CEEB",
     "agent": "#00dddd",
