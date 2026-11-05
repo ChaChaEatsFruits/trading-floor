@@ -44,11 +44,3 @@ uv run -m backend.trading_floor             # the trading engine
 Optional: `MASSIVE_API_KEY` for real prices, `PUSHOVER_USER`/`PUSHOVER_TOKEN` for notifications.
 `RUN_EVERY_N_MINUTES` (default 60) sets the cadence, and the floor skips runs while the market is
 closed unless `RUN_EVEN_WHEN_MARKET_IS_CLOSED=true`. The engine loops until stopped, so watch your API usage.
-
-## Verified
-
-One full cycle for one trader (Warren) ran on `gpt-6-sol`: it read its account, changed its
-strategy and bought VTI and VXUS through the accounts server. The frontend type-checks and builds,
-and the API (including the activity log) answers through the Vite proxy with all four traders
-labelled "GPT 6 Sol". Not exercised: the UI rendered in a browser, the scheduler loop, the other
-three traders, `USE_MANY_MODELS=true`, and runs with the Pushover key.
