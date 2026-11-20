@@ -1,5 +1,7 @@
 # Trading Floor
 
+[![CI](https://github.com/ChaChaEatsFruits/trading-floor/actions/workflows/ci.yml/badge.svg)](https://github.com/ChaChaEatsFruits/trading-floor/actions/workflows/ci.yml)
+
 ![Trading floor dashboard](docs/dashboard.png)
 
 Five AI traders - Warren (value), George (macro), Ray (systematic), Cathie (crypto) and Rakesh (India ETFs) - each
